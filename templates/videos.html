@@ -2,6 +2,55 @@
 {% set active_page = "videos" %}
 
 {% block content %}
+
+
+  <div class="container">
+    <h3 class="collapse-header"><a href="#" type="button" data-toggle="collapse" data-target="#new_video">Click here to add new video</a></h3>
+
+    <form id="new_video" action="{{ url_for('add_video') }}" method="POST" class="form-horizontal collapse">
+      <fieldset>
+
+        <!-- Title -->
+        <div class="control-group">
+          <label class="control-label" for="title">Title</label>
+          <div class="controls">
+            <input id="title" name="video_title" type="text">
+          </div>
+        </div>
+
+        <!-- Genre -->
+        <div class="control-group">
+          <label class="control-label" for="genre">Genre</label>
+          <div class="controls">
+            <select id="genre" name="movie_genre">
+              <option selected="true"></option>
+              {% for genre in genres %}
+                <option>{{genre}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="control-group">
+          <label class="control-label" for="category">Category</label>
+          <div class="controls">
+            <input id="category" name="video_category" type="text">
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="control-group">
+          <div class="controls">
+            <input type="submit" value="Add video to DB">
+          </div>
+        </div>
+
+      </fieldset>
+    </form>
+  </div>
+
+
   <table>
     <tr>
       <th>Title</th>
@@ -18,4 +67,7 @@
     {% endfor %}
 
   </table>
+
+<script>
+</script>
 {% endblock %}

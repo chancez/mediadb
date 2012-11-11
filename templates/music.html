@@ -2,20 +2,85 @@
 {% set active_page = "music" %}
 
 {% block content %}
+  <div class="container">
+    <h3 class="collapse-header"><a href="#" type="button" data-toggle="collapse" data-target="#new_music">Click here to add new music</a></h3>
+
+    <form id="new_music" action="{{ url_for('add_music') }}" method="POST" class="form-horizontal collapse">
+      <fieldset>
+
+        <!-- Title -->
+        <div class="control-group">
+          <label class="control-label" for="title">Song Title</label>
+          <div class="controls">
+            <input id="title" name="song_title" type="text">
+          </div>
+        </div>
+
+        <!-- Artist -->
+        <div class="control-group">
+          <label class="control-label" for="artist">Artist</label>
+          <div class="controls">
+            <select id="artist" name="song_artist">
+              <option selected="true"></option>
+              {% for artist in artists %}
+                <option>{{artist}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Album -->
+        <div class="control-group">
+          <label class="control-label" for="album">Album Name</label>
+          <div class="controls">
+            <input id="album" name="song_album" type="text">
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="control-group">
+          <label class="control-label" for="category">Category</label>
+          <div class="controls">
+            <input id="category" name="song_category" type="text">
+          </div>
+        </div>
+
+        <!-- Length -->
+        <div class="control-group">
+          <label class="control-label" for="length">Length</label>
+          <div class="controls">
+            <input id="length" name="song_length" type="text">
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="control-group">
+          <div class="controls">
+            <input type="submit" value="Add music to DB">
+          </div>
+        </div>
+
+      </fieldset>
+    </form>
+  </div>
+
+
   <table>
     <tr>
       <th>Title</th>
       <th>Artist</th>
+      <th>Album</th>
       <th>Category</th>
       <th>Length</th>
     </tr>
     <! -- Music -->
-    {% for item in music %}
+    {% for song in songs %}
       <tr>
-        <td>{{ item.title }}</td>
-        <td>{{ item.artist }}</td>
-        <td>{{ item.category }}</td>
-        <td>{{ item.Length }}</td>
+        <td>{{ song.title }}</td>
+        <td>{{ song.artist }}</td>
+        <td>{{ song.album }}</td>
+        <td>{{ song.category }}</td>
+        <td>{{ song.length }}</td>
       </tr>
     {% endfor %}
 

@@ -37,3 +37,15 @@ table td {
   padding: 9px 0;
 }
 
+.form-horizontal .control-group
+{
+  margin-bottom: 5px;
+}
+
+.collapse-header
+{
+  border-style: none none solid;
+  border-width: 0 0 1px;
+  margin-bottom: 15px;
+  border-color: -moz-use-text-color -moz-use-text-color #E5E5E5;
+}
