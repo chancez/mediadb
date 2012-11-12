@@ -21,6 +21,15 @@ class Artist(object):
         self.l_name = l_name
         self.full_name = f_name + " " + l_name
 
+class Band(object):
+    def __init__(self, name, genres, albums, timeframe, labels, website):
+        self.name = name
+        self.genres = genres
+        self.albums = albums
+        self.timeframe = timeframe
+        self.labels = labels
+        self.website = website
+
 class Song(object):
     def __init__(self, title, artist, album, category, length):
         self.title = title
@@ -42,10 +51,12 @@ def connect_db():
 
 @app.before_request
 def before_request():
+    return
     g.db = connect_db()
 
 @app.teardown_request
 def teardown_request(exception):
+    return
     g.db.close()
 
 
@@ -55,9 +66,9 @@ def home():
     return render_template("home.html")
 
 def get_movies():
-    batman = Movie(1, "Batman", "action", "movie", """A really good movie, too
+    batman = Movie(1, "Batman", "Action", "Movie", """A really good movie, too
     bad heath ledger died""","1:43")
-    future = Movie(2, "Back to the Future", "comedy", "movie", """"Wait a minute,
+    future = Movie(2, "Back to the Future", "Comedy", "Movie", """"Wait a minute,
     Doc. Ah... Are you telling me that you built a time machine... out of a
     DeLorean?""","1:56")
     movies = [batman, future]
@@ -70,7 +81,8 @@ def get_songs():
     return songs
 
 def get_artists():
-    artists = ['Test1','Tester2','Some Unknown Artist']
+    flowers = Artist("Brandon", "Flowers")
+    artists = [flowers]
     return artists
 
 def get_actors():
@@ -102,11 +114,6 @@ def music():
     artists = get_artists()
     songs = get_songs()
     return render_template("music.html", artists=artists, songs=songs)
-
-@app.route('/artist/<int:artist_id>')
-def get_artist(artist_id):
-    flowers = Artist("Brandon", "Flowers")
-    return render_template("artist.html", artist=flowers)
 
 @app.route('/music/harsh_generation')
 def temp():

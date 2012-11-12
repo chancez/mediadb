@@ -2,70 +2,192 @@
 {% set active_page = "music" %}
 
 {% block content %}
-  <div class="container">
-    <h3 class="collapse-header"><a href="#" type="button" data-toggle="collapse" data-target="#new_music">Click here to add new music</a></h3>
 
-    <form id="new_music" action="{{ url_for('add_music') }}" method="POST" class="form-horizontal collapse">
-      <fieldset>
+  <div>
 
-        <!-- Title -->
-        <div class="control-group">
-          <label class="control-label" for="title">Song Title</label>
-          <div class="controls">
-            <input id="title" name="song_title" type="text">
+    <h2 class="collapse-header">
+    <a href="#" data-toggle="collapse"
+    data-target="#new_items">Add new content</a>
+    </h2>
+
+    <div id="new_items" class="collapse">
+      <h4 class="collapse-header">
+      <a href="#" data-toggle="collapse"
+      data-target="#new_song">New song</a>
+      </h4>
+
+      <form id="new_song" action="{{ url_for('add_music') }}" method="POST" class="form-horizontal collapse">
+        <fieldset>
+
+          <!-- Title -->
+          <div class="control-group">
+            <label class="control-label" for="title">Song Title</label>
+            <div class="controls">
+              <input id="title" name="song_title" type="text"/>
+            </div>
           </div>
-        </div>
 
-        <!-- Artist -->
-        <div class="control-group">
-          <label class="control-label" for="artist">Artist</label>
-          <div class="controls">
-            <select id="artist" name="song_artist">
-              <option selected="true"></option>
-              {% for artist in artists %}
-                <option>{{artist}}</option>
-              {% endfor %}
-            </select>
+          <!-- Artist/Band -->
+          <div class="control-group">
+            <label class="control-label" for="artist">Artists/Bands</label>
+            <div class="controls">
+              <select id="artist" name="song_artist">
+                <option selected="true"></option>
+                <option>The Killers</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        <!-- Album -->
-        <div class="control-group">
-          <label class="control-label" for="album">Album Name</label>
-          <div class="controls">
-            <input id="album" name="song_album" type="text">
+          <!-- Album -->
+          <div class="control-group">
+            <label class="control-label" for="album">Album Name</label>
+            <div class="controls">
+              <select id="album" name="song_album" type="text">
+                <option></option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        <!-- Category -->
-        <div class="control-group">
-          <label class="control-label" for="category">Category</label>
-          <div class="controls">
-            <input id="category" name="song_category" type="text">
+
+          <script>
+          //move this somewhere else
+            $(function() {
+              $("#artist").change(function() {
+                var albums = ["Origins and formation", "Hot Fuss", "Sam's Town and Sawdust", "Day & Age, Battle Born"]
+                //clear all current entries
+                var $album = $("#album");
+                $album.children().remove();
+
+                //fill the entries
+                if ($(this).val() == "The Killers") {
+                  var length = albums.length;
+                  for (var i = 0; i < length; i++){
+                    $album.append(
+                      $('<option>').text(albums[i])
+                    );
+                  }
+                }
+              });
+            });
+          </script>
+
+          <!-- Length -->
+          <div class="control-group">
+            <label class="control-label" for="length">Length</label>
+            <div class="controls">
+              <input id="length" name="song_length" type="text" />
+            </div>
           </div>
-        </div>
 
-        <!-- Length -->
-        <div class="control-group">
-          <label class="control-label" for="length">Length</label>
-          <div class="controls">
-            <input id="length" name="song_length" type="text">
+          <!-- Submit -->
+          <div class="control-group">
+            <div class="controls">
+              <input type="submit" value="Add song" />
+            </div>
           </div>
-        </div>
 
-        <!-- Submit -->
-        <div class="control-group">
-          <div class="controls">
-            <input type="submit" value="Add music to DB">
+        </fieldset>
+      </form><!-- End New song -->
+
+      <h4 class="collapse-header">
+      <a href="#" data-toggle="collapse"
+      data-target="#new_album">New album</a>
+      </h4>
+
+      <form id="new_album" action="" method="POST" class="form-horizontal collapse">
+        <fieldset>
+
+          <!-- Artist/Band -->
+          <div class="control-group">
+            <label class="control-label" for="artist">Artists/Bands</label>
+            <div class="controls">
+              <select id="artist" name="song_artist">
+                <option selected="true"></option>
+                <option>The Killers</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-      </fieldset>
-    </form>
+          <!-- Title -->
+          <div class="control-group">
+            <label class="control-label" for="title">Album Title</label>
+            <div class="controls">
+              <input id="title" name="album_title" type="text" />
+            </div>
+          </div>
+
+          <!-- Genre -->
+          <div class="control-group">
+            <label class="control-label" for="title">Genre</label>
+            <div class="controls">
+              <input id="title" name="album_genre" type="text" />
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="control-group">
+            <div class="controls">
+              <input type="submit" value="Add music to DB" />
+            </div>
+          </div>
+
+        </fieldset>
+      </form><!-- End New Album -->
+
+      <h4 class="collapse-header">
+      <a href="#" data-toggle="collapse"
+      data-target="#new_band">New band</a>
+      </h4>
+
+      <form id="new_band" action="" method="POST" class="form-horizontal collapse">
+        <fieldset>
+
+          <!-- Band -->
+          <div class="control-group">
+            <label class="control-label" for="title">Band Name</label>
+            <div class="controls">
+              <input id="title" name="band_name" type="text"/>
+            </div>
+          </div>
+
+          <!-- Artists -->
+          <div class="control-group">
+            <label class="control-label" for="title">Artist Name</label>
+            <div class="controls">
+              <div class="artist_list">
+                <input id="title" name="artist_name" class="artists" type="text"/>
+                <a class="btn" href="#" id="plus"><i class="icon-plus"></i></a>
+                <a class="btn" href="#" id="minus"><i class="icon-minus"></i></a>
+              </div>
+            </div>
+          </div>
+
+
+          <script>
+            $(function() {
+              $(".artist_list").live("click", function() {
+                alert("not yet implemented!");
+              });
+            });
+
+
+          </script>
+
+          <!-- Submit -->
+          <div class="control-group">
+            <div class="controls">
+              <input type="submit" value="Add music to DB">
+            </div>
+          </div>
+
+        </fieldset>
+      </form><!-- End New Band -->
+
+    </div> <!-- End new_items div -->
   </div>
 
   <table class="table">
-    <h3>Artists</h3>
+    <h3>Artists/Bands</h3>
 
     <tr>
       <th>Members</th>
@@ -78,13 +200,13 @@
     </tr>
 
     <tr>
-      <td><a href="">Brandon Flowers</a>,
+      <td>Brandon Flowers,
       Dave Keuning,
       Ronnie Vannucci, Jr.,
       Mark Stoermer,
       </td>
       <td>The Killers</td>
-      <td>  Indie rock, alternative rock, post-punk revival, heartland rock</td>
+      <td>Indie rock, alternative rock, post-punk revival, heartland rock</td>
       <td>Origins and formation,
           Hot Fuss,
           Sam's Town and Sawdust,
@@ -103,7 +225,6 @@
           <td>Grendel</td>
           <td>EMB/Aggrotech</td>
           <td>Timewave: Zero (Limited Edition),
-          EMB/Aggrotech,
           <a href="{{ url_for('temp') }}">Harsh Generation</a>,
           Chemicals + Circuitry,
           Soilbleed Redux,

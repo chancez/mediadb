@@ -2,52 +2,122 @@
 {% set active_page = "videos" %}
 
 {% block content %}
+  <div>
 
+    <h2 class="collapse-header">
+    <a href="#" data-toggle="collapse"
+    data-target="#new_items">Add new content</a>
+    </h2>
 
-  <div class="container">
-    <h3 class="collapse-header"><a href="#" type="button" data-toggle="collapse" data-target="#new_video">Click here to add new video</a></h3>
+    <div id="new_items" class="collapse">
+      <h3 class="collapse-header">
+      <a href="#" type="button" data-toggle="collapse" 
+      data-target="#new_video">New Video</a>
+      </h3>
 
-    <form id="new_video" action="{{ url_for('add_video') }}" method="POST" class="form-horizontal collapse">
-      <fieldset>
+      <form id="new_video" action="{{ url_for('add_video') }}" method="POST" class="form-horizontal collapse">
+        <fieldset>
 
-        <!-- Title -->
-        <div class="control-group">
-          <label class="control-label" for="title">Title</label>
-          <div class="controls">
-            <input id="title" name="video_title" type="text">
+          <!-- Title -->
+          <div class="control-group">
+            <label class="control-label" for="title">Title</label>
+            <div class="controls">
+              <input id="title" name="video_title" type="text">
+            </div>
           </div>
-        </div>
 
-        <!-- Genre -->
-        <div class="control-group">
-          <label class="control-label" for="genre">Genre</label>
-          <div class="controls">
-            <select id="genre" name="movie_genre">
-              <option selected="true"></option>
-              {% for genre in genres %}
-                <option>{{genre}}</option>
-              {% endfor %}
-            </select>
+          <!-- Actors -->
+          <div class="control-group">
+            <label class="control-label" for="category">Actors</label>
+            <div class="controls">
+              <select id="category" name="video_actors" type="text">
+                <option></option>
+                <option>Heath Ledger</option>
+                <option>Actor 1</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        <!-- Category -->
-        <div class="control-group">
-          <label class="control-label" for="category">Category</label>
-          <div class="controls">
-            <input id="category" name="video_category" type="text">
+
+          <!-- Genre -->
+          <div class="control-group">
+            <label class="control-label" for="genre">Genre</label>
+            <div class="controls">
+              <select id="genre" name="movie_genre">
+                <option selected="true"></option>
+                {% for genre in genres %}
+                  <option>{{genre}}</option>
+                {% endfor %}
+              </select>
+            </div>
           </div>
-        </div>
 
-        <!-- Submit -->
-        <div class="control-group">
-          <div class="controls">
-            <input type="submit" value="Add video to DB">
+          <!-- Category -->
+          <div class="control-group">
+            <label class="control-label" for="category">Category</label>
+            <div class="controls">
+              <select id="category" name="video_category" type="text">
+                <option>Movie</option>
+                <option>TV Show</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-      </fieldset>
-    </form>
+          <!-- Length -->
+          <div class="control-group">
+            <label class="control-label" for="category">Length</label>
+            <div class="controls">
+              <input id="category" name="video_length" type="text" />
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="control-group">
+            <div class="controls">
+              <input type="submit" value="Add video">
+            </div>
+          </div>
+
+        </fieldset>
+      </form> <!-- end new video form -->
+
+
+      <!-- New Actors -->
+      <h3 class="collapse-header">
+      <a href="#" type="button" data-toggle="collapse" 
+      data-target="#new_actors">New Actor</a>
+      </h3>
+
+      <form id="new_actors" action="" method="POST" class="form-horizontal collapse">
+        <fieldset>
+
+          <!-- First Name -->
+          <div class="control-group">
+            <label class="control-label" for="category">First Name</label>
+            <div class="controls">
+              <input id="category" name="actor_first_name" type="text">
+            </div>
+          </div>
+
+          <!-- Last Name -->
+          <div class="control-group">
+            <label class="control-label" for="category">Last Name</label>
+            <div class="controls">
+              <input id="category" name="actor_last_name" type="text" />
+            </div>
+
+          <!-- Submit -->
+          <div class="control-group">
+            <div class="controls">
+              <input type="submit" value="Add actor">
+            </div>
+          </div>
+
+        </fieldset>
+      </form> <!-- end new actors form -->
+
+    </div> <!-- end new_items div -->
+
   </div>
 
 
@@ -71,25 +141,25 @@
     <tr>
       <td>Johnny Mnemonic</td>
       <td>Cyberpunk</td>
-      <td>DVD Movie</td>
+      <td>Movie</td>
       <td>1:43</td>
     </tr>
     <tr>
       <td>The Matrix</td>
       <td>Cyberpunk</td>
-      <td>DVD Movie</td>
+      <td>Movie</td>
       <td>2:16</td>
     </tr>
     <tr>
       <td>Batman Begins</td>
       <td>Action</td>
-      <td>DVD Movie</td>
+      <td>Movie</td>
       <td>2:20</td>
     
     </tr><tr>
       <td>Back to the Future</td>
       <td>Comedy</td>
-      <td>DVD Movie</td>
+      <td>Movie</td>
       <td>1:56</td>
     
   </tr> 
