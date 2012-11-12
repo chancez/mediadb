@@ -6,10 +6,14 @@ app = Flask(__name__)
 app.debug = True
 
 class Movie(object):
-    def __init__(self, title, genre, category):
+    def __init__(self, id, title, genre, category, description, length):
+        self.id = id
         self.title = title
         self.genre = genre
         self.category = category
+        self.length = length
+        self.description = description
+
 
 class Artist(object):
     def __init__(self, f_name, l_name):
@@ -45,15 +49,17 @@ def teardown_request(exception):
     g.db.close()
 
 
-
 @app.route('/home/')
 @app.route('/')
 def home():
     return render_template("home.html")
 
 def get_movies():
-    batman = Movie("Batman", "action", "movie")
-    future = Movie("Back to the Future", "comedy", "movie")
+    batman = Movie(1, "Batman", "action", "movie", """A really good movie, too
+    bad heath ledger died""","1:43")
+    future = Movie(2, "Back to the Future", "comedy", "movie", """"Wait a minute,
+    Doc. Ah... Are you telling me that you built a time machine... out of a
+    DeLorean?""","1:56")
     movies = [batman, future]
 
     return movies
@@ -67,6 +73,10 @@ def get_artists():
     artists = ['Test1','Tester2','Some Unknown Artist']
     return artists
 
+def get_actors():
+    actors = []
+    return actors
+
 def get_movie_genres():
     genres = ["action", "adventure", "comedy", "crime", "horror"]
     return genres
@@ -77,11 +87,30 @@ def videos():
     genres = get_movie_genres()
     return render_template("videos.html", movies=movies, genres=genres)
 
+@app.route('/movie/<int:movie_id>')
+def get_movie(movie_id):
+    movies = get_movies()
+    for item in movies:
+        if (item.id == movie_id):
+            movie = item
+            break
+
+    return render_template("movie.html", movie=movie)
+
 @app.route('/music/')
 def music():
     artists = get_artists()
     songs = get_songs()
     return render_template("music.html", artists=artists, songs=songs)
+
+@app.route('/artist/<int:artist_id>')
+def get_artist(artist_id):
+    flowers = Artist("Brandon", "Flowers")
+    return render_template("artist.html", artist=flowers)
+
+@app.route('/music/harsh_generation')
+def temp():
+    return render_template("harsh_generation.html")
 
 @app.route('/add_video', methods=['POST','GET'])
 def add_video():

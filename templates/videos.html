@@ -51,20 +51,48 @@
   </div>
 
 
-  <table>
+  <table class="table">
     <tr>
       <th>Title</th>
       <th>Genre</th>
       <th>Category</th>
+      <th>Length</th>
     </tr>
     <! -- Movies -->
     {% for movie in movies|sort(attribute='genre') %}
       <tr>
-        <td>{{ movie.title }}</td>
+        <td><a href="/movie/{{movie.id}}">{{ movie.title }}</a></td>
         <td>{{ movie.genre }}</td>
         <td>{{ movie.category }}</td>
+        <td>{{ movie.length }}</td>
       </tr>
     {% endfor %}
+
+    <tr>
+      <td>Johnny Mnemonic</td>
+      <td>Cyberpunk</td>
+      <td>DVD Movie</td>
+      <td>1:43</td>
+    </tr>
+    <tr>
+      <td>The Matrix</td>
+      <td>Cyberpunk</td>
+      <td>DVD Movie</td>
+      <td>2:16</td>
+    </tr>
+    <tr>
+      <td>Batman Begins</td>
+      <td>Action</td>
+      <td>DVD Movie</td>
+      <td>2:20</td>
+    
+    </tr><tr>
+      <td>Back to the Future</td>
+      <td>Comedy</td>
+      <td>DVD Movie</td>
+      <td>1:56</td>
+    
+  </tr> 
 
   </table>
 

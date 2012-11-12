@@ -64,25 +64,53 @@
     </form>
   </div>
 
+  <table class="table">
+    <h3>Artists</h3>
 
-  <table>
     <tr>
-      <th>Title</th>
-      <th>Artist</th>
-      <th>Album</th>
-      <th>Category</th>
-      <th>Length</th>
+      <th>Members</th>
+      <th>Band Name</th>
+      <th>Genre(s)</th>
+      <th>Album(s)</th>
+      <th>Years active</th>
+      <th>Labels</th>
+      <th>Website</th>
     </tr>
-    <! -- Music -->
-    {% for song in songs %}
-      <tr>
-        <td>{{ song.title }}</td>
-        <td>{{ song.artist }}</td>
-        <td>{{ song.album }}</td>
-        <td>{{ song.category }}</td>
-        <td>{{ song.length }}</td>
-      </tr>
-    {% endfor %}
 
+    <tr>
+      <td><a href="">Brandon Flowers</a>,
+      Dave Keuning,
+      Ronnie Vannucci, Jr.,
+      Mark Stoermer,
+      </td>
+      <td>The Killers</td>
+      <td>  Indie rock, alternative rock, post-punk revival, heartland rock</td>
+      <td>Origins and formation,
+          Hot Fuss,
+          Sam's Town and Sawdust,
+          Day & Age,
+          Battle Born
+      </td>
+      <td>2001-Present</td>
+      <td>Island, Vertigo, Marrakesh</td>
+      <td><a href="thekillersmusic.com">thekillersmusic.com</a></td>
+    </tr>
+
+        <tr>
+          <td>VLRK,
+          M4RC,
+          S42H</td>
+          <td>Grendel</td>
+          <td>EMB/Aggrotech</td>
+          <td>Timewave: Zero (Limited Edition),
+          EMB/Aggrotech,
+          <a href="{{ url_for('temp') }}">Harsh Generation</a>,
+          Chemicals + Circuitry,
+          Soilbleed Redux,
+          Soilbleed EP</td>
+          <td>1997–present</td>
+          <td>Infacted, Metropolis, NoiTekk</td>
+          <td><a href="grendel-base.com">grendel-base.com</a></td>
+        </tr>
   </table>
 {% endblock %}
