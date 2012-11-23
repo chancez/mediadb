@@ -1,89 +1,32 @@
 #!/usr/bin/env python
 from flask import Flask, render_template, g, url_for, request
+from itertools import groupby
 import MySQLdb as mdb
+import MySQLdb.cursors
 
 app = Flask(__name__)
 app.debug = True
 
-class Movie(object):
-    def __init__(self, id, title, genre, category, description, length):
-        self.id = id
-        self.title = title
-        self.genre = genre
-        self.category = category
-        self.length = length
-        self.description = description
-
-
-class Artist(object):
-    def __init__(self, f_name, l_name):
-        self.f_name = f_name
-        self.l_name = l_name
-        self.full_name = f_name + " " + l_name
-
-class Band(object):
-    def __init__(self, name, genres, albums, timeframe, labels, website):
-        self.name = name
-        self.genres = genres
-        self.albums = albums
-        self.timeframe = timeframe
-        self.labels = labels
-        self.website = website
-
-class Song(object):
-    def __init__(self, title, artist, album, category, length):
-        self.title = title
-        self.artist = artist
-        self.album = album
-        self.category = category
-        self.length = length
-
-class Album(object):
-    def __init__(self, title, num_songs, songs):
-        self.title = title
-        self.num_songs = num_songs
-        self.songs = songs
-
 def connect_db():
     return mdb.connect(host="localhost", port=3306, user="testuser",
-                    passwd="test123", db="media_db")
-
+                    passwd="test123", db="media_db",
+                    cursorclass=mdb.cursors.DictCursor)
 
 @app.before_request
 def before_request():
-    return
     g.db = connect_db()
 
 @app.teardown_request
 def teardown_request(exception):
-    return
     g.db.close()
 
-
-@app.route('/home/')
-@app.route('/')
-def home():
-    return render_template("home.html")
-
 def get_movies():
-    batman = Movie(1, "Batman", "Action", "Movie", """A really good movie, too
-    bad heath ledger died""","1:43")
-    future = Movie(2, "Back to the Future", "Comedy", "Movie", """"Wait a minute,
-    Doc. Ah... Are you telling me that you built a time machine... out of a
-    DeLorean?""","1:56")
-    movies = [batman, future]
-
+    movies = []
     return movies
 
 def get_songs():
-    aSong = Song("Dear Prudence","The Beatles","The Beatles","Rock",3.56*60)
-    songs = [aSong]
+    songs = []
     return songs
-
-def get_artists():
-    flowers = Artist("Brandon", "Flowers")
-    artists = [flowers]
-    return artists
 
 def get_actors():
     actors = []
@@ -92,6 +35,12 @@ def get_actors():
 def get_movie_genres():
     genres = ["action", "adventure", "comedy", "crime", "horror"]
     return genres
+
+
+@app.route('/home/')
+@app.route('/')
+def home():
+    return render_template("home.html")
 
 @app.route('/videos/')
 def videos():
@@ -102,22 +51,49 @@ def videos():
 @app.route('/movie/<int:movie_id>')
 def get_movie(movie_id):
     movies = get_movies()
-    for item in movies:
-        if (item.id == movie_id):
-            movie = item
-            break
+    movie = ''
 
     return render_template("movie.html", movie=movie)
 
 @app.route('/music/')
 def music():
-    artists = get_artists()
-    songs = get_songs()
-    return render_template("music.html", artists=artists, songs=songs)
+    query = """SELECT b.band_id, b.name, b.year_started, b.year_ended, b.website,
+               a.artist_id, CONCAT(a.f_name, ' ',a.l_name) as artist
+               FROM band_member m
+               LEFT JOIN artist a ON m.member = a.artist_id
+               LEFT JOIN band b ON m.band = b.band_id
+               GROUP BY b.name, artist
+               ORDER BY b.band_id, a.artist_id"""
 
-@app.route('/music/harsh_generation')
-def temp():
-    return render_template("harsh_generation.html")
+    cur = g.db.cursor()
+    cur.execute(query)
+    row_bands = cur.fetchall()
+
+    bands = []
+    for band, members in groupby(row_bands, lambda row: row['band_id']):
+        first = True
+        for member in members:
+            # First iteration grabs band info
+            if first == True:
+                aBand = dict(name=member['name'], begin=member['year_started'],
+                end=member['year_ended'], website=member['website'], members={})
+
+                if aBand['end'] == 0:
+                    aBand['end'] = "Present"
+                first = False
+
+            # Add each member to the band's member dict, with their ID as key
+            artist = member['artist']
+            artist_id = member['artist_id']
+            aBand['members'][artist_id] = artist
+
+        bands.append(aBand)
+
+    return render_template("music.html", bands=bands)
+
+@app.route('/artist/<int:a_id>')
+def get_artist(a_id):
+    return str(a_id)
 
 @app.route('/add_video', methods=['POST','GET'])
 def add_video():

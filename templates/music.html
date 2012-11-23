@@ -198,6 +198,20 @@
       <th>Labels</th>
       <th>Website</th>
     </tr>
+    {% for band in bands %}
+    <tr>
+      <td>{% for id, member in band.members.items() %}
+            <a href="{{ url_for('get_artist', a_id=id) }}">{{ member }}</a>
+          {% endfor %}
+      </td>
+      <td>{{ band.name }}</td>
+      <td></td>
+      <td></td>
+      <td>{{ band.begin }} - {{ band.end }}</td>
+      <td></td>
+      <td><a href="{{ band.website }}">{{ band.website }}</a></td>
+    </tr>
+    {% endfor %}
 
     <tr>
       <td>Brandon Flowers,
@@ -225,7 +239,7 @@
           <td>Grendel</td>
           <td>EMB/Aggrotech</td>
           <td>Timewave: Zero (Limited Edition),
-          <a href="{{ url_for('temp') }}">Harsh Generation</a>,
+          <a href="">Harsh Generation</a>,
           Chemicals + Circuitry,
           Soilbleed Redux,
           Soilbleed EP</td>
