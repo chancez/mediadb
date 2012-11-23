@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% set active_page = "music" %}
 
+{% macro comma(loop) %}
+  {% if not loop.last %},{% endif %}
+{% endmacro %}
+
 {% block content %}
 
   <div>
@@ -200,15 +204,28 @@
     </tr>
     {% for band in bands %}
     <tr>
-      <td>{% for id, member in band.members.items() %}
-            <a href="{{ url_for('get_artist', a_id=id) }}">{{ member }}</a>
+      <td>{% for member in band.members %}
+            <a href="{{ url_for('get_artist', a_id=member.id) }}">{{ member.name }}</a>
+            {{ comma(loop) }}
           {% endfor %}
       </td>
-      <td>{{ band.name }}</td>
-      <td></td>
-      <td></td>
+      <td><a href="{{ url_for('get_band', b_id=band.id) }}">{{ band.name }}</a></td>
+      <td>{% for genre in band.genres %}
+            {{ genre }}
+            {{ comma(loop) }}
+          {% endfor %}
+      </td>
+      <td>{% for album in band.albums %}
+            <a href="{{ url_for('get_album', alb_id=album.id) }}">{{ album.name }}</a>
+            {{ comma(loop) }}
+          {% endfor %}
+      </td>
       <td>{{ band.begin }} - {{ band.end }}</td>
-      <td></td>
+      <td>{% for label in band.labels %}
+            {{ label }}
+            {{ comma(loop) }}
+          {% endfor %}
+      </td>
       <td><a href="{{ band.website }}">{{ band.website }}</a></td>
     </tr>
     {% endfor %}

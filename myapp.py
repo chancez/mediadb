@@ -65,6 +65,11 @@ def music():
                GROUP BY b.name, artist
                ORDER BY b.band_id, a.artist_id"""
 
+    album_query = """SELECT a.album_id, a.name, a.record_label, a.genre
+                     FROM band_album ba
+                     LEFT JOIN album a ON a.album_id=ba.album
+                     WHERE ba.band = %s"""
+
     cur = g.db.cursor()
     cur.execute(query)
     row_bands = cur.fetchall()
@@ -75,17 +80,37 @@ def music():
         for member in members:
             # First iteration grabs band info
             if first == True:
-                aBand = dict(name=member['name'], begin=member['year_started'],
-                end=member['year_ended'], website=member['website'], members={})
+                aBand = dict(id=member['band_id'], name=member['name'],
+                    begin=member['year_started'], end=member['year_ended'],
+                    website=member['website'], members=[], albums=[],
+                    labels=[], genres=[])
+
+                # Grab albums for the band
+                cur.execute(album_query, aBand['id'])
+                row_albums = cur.fetchall()
+
+                for album in row_albums:
+                    anAlbum = dict(id=album['album_id'], name=album['name'])
+                    aBand['albums'].append(anAlbum)
+
+                    genre = album['genre']
+                    label = album['record_label']
+                    if genre not in aBand['genres']:
+                        aBand['genres'].append(genre)
+                    if label not in aBand['labels']:
+                        aBand['labels'].append(label)
+
 
                 if aBand['end'] == 0:
                     aBand['end'] = "Present"
+
                 first = False
 
             # Add each member to the band's member dict, with their ID as key
-            artist = member['artist']
-            artist_id = member['artist_id']
-            aBand['members'][artist_id] = artist
+            a_name = member['artist']
+            a_id = member['artist_id']
+            aBand['members'].append({'id': a_id, 'name': a_name})
+        print aBand
 
         bands.append(aBand)
 
@@ -94,6 +119,14 @@ def music():
 @app.route('/artist/<int:a_id>')
 def get_artist(a_id):
     return str(a_id)
+
+@app.route('/band/<int:b_id>')
+def get_band(b_id):
+    return str(b_id)
+
+@app.route('/album/<int:alb_id>')
+def get_album(alb_id):
+    return str(alb_id)
 
 @app.route('/add_video', methods=['POST','GET'])
 def add_video():
