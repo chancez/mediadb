@@ -164,7 +164,7 @@ def get_artist(artist_id):
 
     cursor = g.db.cursor()
     cursor.execute(query, artist_id)
-    artist = cursor.fetch()
+    artist = cursor.fetchone()
 
     return artist
 
