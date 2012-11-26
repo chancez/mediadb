@@ -446,7 +446,8 @@ def artist(a_id):
 def band(b_id):
     band = get_band(b_id)
     albums = get_band_albums(b_id)
-    return render_template("band.html", band=band, albums=albums)
+    members = get_members(b_id)
+    return render_template("band.html", band=band, albums=albums, members=members)
 
 @app.route('/album/<int:alb_id>')
 def album(alb_id):

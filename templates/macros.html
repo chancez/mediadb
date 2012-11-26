@@ -42,3 +42,8 @@
 <br />
 {% endmacro %}
 
+{% macro comma(loop) %}
+  {% if not loop.last %},{% endif %}
+{% endmacro %}
+
+

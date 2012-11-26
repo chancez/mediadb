@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set active_page = "music" %}
-{% from "render.html" import render_album as render %}
+{% from "macros.html" import render_album as render %}
 
 {% block content %}
   <h2><a href="{{ url_for('band', b_id=album.band_id) }}">{{ album.band }}</a></h2>
