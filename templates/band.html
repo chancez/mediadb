@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% set active_page = "music" %}
+{% from "render.html" import render_album as render %}
+
+{% block content %}
+
+<div class="content">
+
+  <h1>{{ band.name }}</h1><hr />
+  <h2>Website:</h2> {{ band.website|urlize() }}
+  <h2>Years Active:</h2> {{ band.begin }} -
+  {% if not band.end %}
+    Current
+  {% else %}
+    {{ band.end }}
+  {% endif %}
+
+
+  <h2>Albums:</h2>
+  <br />
+
+  {% for album in albums %}
+    {{ render(album) }}
+  {% endfor %}
+
+</div>
+
+
+
+{% endblock %}

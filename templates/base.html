@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>CS275 Media DB</title>
+    <title>CS275 Media DB - {% block title %}{% endblock %}</title>
 
     <!-- Le styles -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
@@ -11,6 +11,7 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
   </head>
 
   <body>
@@ -18,13 +19,11 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          </a>
           <a class="brand" href="/">CS275 Media Database</a>
           <ul class="nav">
             {% block nav %}
               <li {% if active_page == "home" %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a></li>
-              <li {% if active_page == "videos" %} class="active" {% endif %}><a href="{{ url_for('videos') }}">Videos</a></li>
+              <!-- <li {% if active_page == "videos" %} class="active" {% endif %}><a href="{{ url_for('videos') }}">Videos</a></li> -->
               <li {% if active_page == "music" %} class="active" {% endif %}><a href="{{ url_for('music') }}">Music</a></li>
             {% endblock %}
           </ul>

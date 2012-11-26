@@ -5,7 +5,24 @@
   {% if not loop.last %},{% endif %}
 {% endmacro %}
 
+
 {% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+      {% for category, message in messages %}
+        {% if category %}
+          <div class="alert-{{category}}">
+        {% else %}
+          <div class="alert">
+        {% endif %}
+          <a class="close" data-dismiss="alert">x</a>
+          {{ message }}
+        </div>
+      {% endfor %}
+  {% endif %}
+{% endwith %}
+
 
   <div>
 
@@ -15,62 +32,73 @@
     </h2>
 
     <div id="new_items" class="collapse">
+
       <h4 class="collapse-header">
       <a href="#" data-toggle="collapse"
       data-target="#new_song">New song</a>
       </h4>
 
-      <form id="new_song" action="{{ url_for('add_music') }}" method="POST" class="form-horizontal collapse">
+      <form id="new_song" action="{{ url_for('create_song') }}" method="POST" class="form-horizontal collapse">
         <fieldset>
 
           <!-- Title -->
           <div class="control-group">
-            <label class="control-label" for="title">Song Title</label>
+            <label class="control-label" for="song">Song</label>
             <div class="controls">
-              <input id="title" name="song_title" type="text"/>
+              <input id="song" name="song" type="text"/>
             </div>
           </div>
 
           <!-- Artist/Band -->
           <div class="control-group">
-            <label class="control-label" for="artist">Artists/Bands</label>
+            <label class="control-label" for="song_band">Band</label>
             <div class="controls">
-              <select id="artist" name="song_artist">
+              <select id="song_band" name="band">
                 <option selected="true"></option>
-                <option>The Killers</option>
+                {% for band in bands %}
+                  <option value="{{ band.id }}">{{ band.name }}</option>
+                {% endfor %}
               </select>
             </div>
           </div>
 
           <!-- Album -->
           <div class="control-group">
-            <label class="control-label" for="album">Album Name</label>
+            <label class="control-label" for="song_album">Album Name</label>
             <div class="controls">
-              <select id="album" name="song_album" type="text">
+              <select id="song_album" name="album" type="text">
                 <option></option>
               </select>
             </div>
           </div>
 
-
           <script>
-          //move this somewhere else
-            $(function() {
-              $("#artist").change(function() {
-                var albums = ["Origins and formation", "Hot Fuss", "Sam's Town and Sawdust", "Day & Age, Battle Born"]
-                //clear all current entries
-                var $album = $("#album");
-                $album.children().remove();
+            $(document).ready(function() {
+              var remove_options = function(element) {
+                element.html('<option selected="true"></option>');
+              }
+              $("#song_band").change(function(){
+                var b_id = $(this).val();
+                var $albums = $("#song_album");
 
-                //fill the entries
-                if ($(this).val() == "The Killers") {
-                  var length = albums.length;
-                  for (var i = 0; i < length; i++){
-                    $album.append(
-                      $('<option>').text(albums[i])
-                    );
-                  }
+                if (b_id == "") {
+                  remove_options($albums);
+                  return false;
                 }
+
+                $.getJSON("/band/albums",
+                {
+                  band_id: b_id
+                }, function(data) {
+                  remove_options($albums);
+                  $.each(data.albums, function(index, value) {
+                      $albums
+                      .append($("<option></option>")
+                      .attr("value", value.id)
+                      .text(value.name));
+                  });
+                });
+
               });
             });
           </script>
@@ -79,7 +107,15 @@
           <div class="control-group">
             <label class="control-label" for="length">Length</label>
             <div class="controls">
-              <input id="length" name="song_length" type="text" />
+              <input id="length" name="length" type="text" />
+            </div>
+          </div>
+
+          <!-- Track Number -->
+          <div class="control-group">
+            <label class="control-label" for="track_num">Track Number</label>
+            <div class="controls">
+              <input id="track_num" name="track_num" type="text" />
             </div>
           </div>
 
@@ -98,16 +134,18 @@
       data-target="#new_album">New album</a>
       </h4>
 
-      <form id="new_album" action="" method="POST" class="form-horizontal collapse">
+      <form id="new_album" action="{{ url_for('create_album') }}" method="POST" class="form-horizontal collapse">
         <fieldset>
 
           <!-- Artist/Band -->
           <div class="control-group">
-            <label class="control-label" for="artist">Artists/Bands</label>
+            <label class="control-label" for="band">Artists/Bands</label>
             <div class="controls">
-              <select id="artist" name="song_artist">
+              <select id="band" name="band">
                 <option selected="true"></option>
-                <option>The Killers</option>
+              {% for band in bands %}
+                <option value="{{ band.id }}">{{ band.name }}</option>
+              {% endfor %}
               </select>
             </div>
           </div>
@@ -116,22 +154,49 @@
           <div class="control-group">
             <label class="control-label" for="title">Album Title</label>
             <div class="controls">
-              <input id="title" name="album_title" type="text" />
+              <input id="title" name="title" type="text" />
             </div>
           </div>
 
           <!-- Genre -->
           <div class="control-group">
-            <label class="control-label" for="title">Genre</label>
+            <label class="control-label" for="genre">Genre</label>
             <div class="controls">
-              <input id="title" name="album_genre" type="text" />
+              <input id="genre" name="genre" type="text" />
             </div>
           </div>
+
+          <!-- Label -->
+          <div class="control-group">
+            <label class="control-label" for="label">Label</label>
+            <div class="controls">
+              <input id="label" name="label" type="text" />
+            </div>
+          </div>
+
+          <!-- Release Date -->
+          <div class="control-group">
+            <label class="control-label" for="release_date">Release Date</label>
+            <div class="controls">
+              <input id="release_date" name="release" type="text"/>
+            </div>
+          </div>
+
+          <script>
+          $("#release_date").datepicker({
+            minDate: "-80Y",
+            maxDate: "+1Y",
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: "yy-mm-dd",
+            showAnim: ""
+          });
+          </script>
 
           <!-- Submit -->
           <div class="control-group">
             <div class="controls">
-              <input type="submit" value="Add music to DB" />
+              <input type="submit" value="Add Album to DB" />
             </div>
           </div>
 
@@ -143,44 +208,86 @@
       data-target="#new_band">New band</a>
       </h4>
 
-      <form id="new_band" action="" method="POST" class="form-horizontal collapse">
+      <form id="new_band" action="{{ url_for('create_band') }}" method="POST" class="form-horizontal collapse">
         <fieldset>
 
           <!-- Band -->
           <div class="control-group">
-            <label class="control-label" for="title">Band Name</label>
+            <label class="control-label" for="band_name">Band Name</label>
             <div class="controls">
-              <input id="title" name="band_name" type="text"/>
+              <input id="band_name" name="band_name" type="text"/>
             </div>
           </div>
 
-          <!-- Artists -->
+          <!-- Website -->
           <div class="control-group">
-            <label class="control-label" for="title">Artist Name</label>
+            <label class="control-label" for="website">Band Website</label>
             <div class="controls">
               <div class="artist_list">
-                <input id="title" name="artist_name" class="artists" type="text"/>
-                <a class="btn" href="#" id="plus"><i class="icon-plus"></i></a>
-                <a class="btn" href="#" id="minus"><i class="icon-minus"></i></a>
+                <input id="website" name="band_website" class="artists" type="text"/>
               </div>
             </div>
           </div>
 
+          <!-- Year started -->
+          <div class="control-group">
+            <label class="control-label" for="year_started">Year Started</label>
+            <div class="controls">
+              <div class="artist_list">
+                <input id="year_started" name="year_started" class="artists" type="text" maxlength="4"/>
+              </div>
+            </div>
+          </div>
 
-          <script>
-            $(function() {
-              $(".artist_list").live("click", function() {
-                alert("not yet implemented!");
-              });
-            });
-
-
-          </script>
+          <!-- Year Ended -->
+          <div class="control-group">
+            <label class="control-label" for="year_ended">Year Ended</label>
+            <div class="controls">
+              <div class="artist_list">
+                <input id="year_ended" name="year_ended" class="artists" type="text" maxlength="4"/>
+                <span class="help-inline">(Put 0 for Present)</span>
+              </div>
+            </div>
+          </div>
 
           <!-- Submit -->
           <div class="control-group">
             <div class="controls">
-              <input type="submit" value="Add music to DB">
+              <input type="submit" value="Add Band to DB">
+            </div>
+          </div>
+
+        </fieldset>
+      </form><!-- End New Band -->
+
+      <h4 class="collapse-header">
+      <a href="#" data-toggle="collapse"
+      data-target="#new_artist">New artist</a>
+      </h4>
+
+      <form id="new_artist" action="{{ url_for('create_artist') }}" method="POST" class="form-horizontal collapse">
+        <fieldset>
+
+          <!-- First name -->
+          <div class="control-group">
+            <label class="control-label" for="first_name">First Name</label>
+            <div class="controls">
+              <input id="first_name" name="first" type="text"/>
+            </div>
+          </div>
+
+          <!-- Last name -->
+          <div class="control-group">
+            <label class="control-label" for="last_name">Last Name</label>
+            <div class="controls">
+              <input id="last_name" name="last" type="text"/>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="control-group">
+            <div class="controls">
+              <input type="submit" value="Add Artist to DB">
             </div>
           </div>
 
@@ -188,6 +295,63 @@
       </form><!-- End New Band -->
 
     </div> <!-- End new_items div -->
+
+
+    <h2 class="collapse-header">
+    <a href="#" data-toggle="collapse"
+    data-target="#edit_content">Edit content</a>
+    </h2>
+
+    <div id="edit_content" class="collapse">
+
+      <h4 class="collapse-header">
+      <a href="#" data-toggle="collapse"
+      data-target="#add_artist">Add Artist to Band</a>
+      </h4>
+
+      <form id="add_artist" action="{{ url_for('add_artist') }}" method="POST" class="form-horizontal collapse">
+        <fieldset>
+
+          <!-- Band -->
+          <div class="control-group">
+            <label class="control-label" for="band">Band</label>
+            <div class="controls">
+              <select id="band" name="band">
+                <option selected="true"></option>
+              {% for band in bands %}
+                <option value="{{ band.id }}">{{ band.name }}</option>
+              {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <!-- Artist -->
+          <div class="control-group artist">
+            <label class="control-label" for="artist">Artist</label>
+            <div class="controls">
+              <select id="artist" name="artist">
+                <option selected="true"></option>
+              {% for artist in artists %}
+                  <option value="{{ artist.id }}">{{ artist.name }}</option>
+              {% endfor %}
+              </select>
+             <a class="btn" id="add" href="#"><i class="icon-plus"></i></a>
+             <a class="btn" id="remove" href="#"><i class="icon-minus"></i></a>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="control-group">
+            <div class="controls">
+              <input type="submit" value="Add artist to band.">
+            </div>
+          </div>
+
+        </fieldset>
+      </form>
+
+    </div> <!-- End edit_content div -->
+
   </div>
 
   <table class="table">
@@ -205,18 +369,18 @@
     {% for band in bands %}
     <tr>
       <td>{% for member in band.members %}
-            <a href="{{ url_for('get_artist', a_id=member.id) }}">{{ member.name }}</a>
+            {{ member.name }}
             {{ comma(loop) }}
           {% endfor %}
       </td>
-      <td><a href="{{ url_for('get_band', b_id=band.id) }}">{{ band.name }}</a></td>
+      <td><a href="{{ url_for('band', b_id=band.id) }}">{{ band.name }}</a></td>
       <td>{% for genre in band.genres %}
             {{ genre }}
             {{ comma(loop) }}
           {% endfor %}
       </td>
       <td>{% for album in band.albums %}
-            <a href="{{ url_for('get_album', alb_id=album.id) }}">{{ album.name }}</a>
+            <a href="{{ url_for('album', alb_id=album.id) }}">{{ album.name }}</a>
             {{ comma(loop) }}
           {% endfor %}
       </td>
@@ -226,43 +390,8 @@
             {{ comma(loop) }}
           {% endfor %}
       </td>
-      <td><a href="{{ band.website }}">{{ band.website }}</a></td>
+      <td>{{ band.website|urlize() }}</td>
     </tr>
     {% endfor %}
-
-    <tr>
-      <td>Brandon Flowers,
-      Dave Keuning,
-      Ronnie Vannucci, Jr.,
-      Mark Stoermer,
-      </td>
-      <td>The Killers</td>
-      <td>Indie rock, alternative rock, post-punk revival, heartland rock</td>
-      <td>Origins and formation,
-          Hot Fuss,
-          Sam's Town and Sawdust,
-          Day & Age,
-          Battle Born
-      </td>
-      <td>2001-Present</td>
-      <td>Island, Vertigo, Marrakesh</td>
-      <td><a href="thekillersmusic.com">thekillersmusic.com</a></td>
-    </tr>
-
-        <tr>
-          <td>VLRK,
-          M4RC,
-          S42H</td>
-          <td>Grendel</td>
-          <td>EMB/Aggrotech</td>
-          <td>Timewave: Zero (Limited Edition),
-          <a href="">Harsh Generation</a>,
-          Chemicals + Circuitry,
-          Soilbleed Redux,
-          Soilbleed EP</td>
-          <td>1997–present</td>
-          <td>Infacted, Metropolis, NoiTekk</td>
-          <td><a href="grendel-base.com">grendel-base.com</a></td>
-        </tr>
   </table>
 {% endblock %}
