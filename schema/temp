@@ -1,0 +1,12 @@
+SELECT b.band_id, b.name, b.year_started, b.year_ended, b.website,
+a.artist_id, CONCAT(a.f_name, ' ',a.l_name) as artist
+FROM band_member m
+LEFT JOIN artist a ON m.member = a.artist_id
+LEFT JOIN band b ON m.band = b.band_id
+GROUP BY b.name, artist
+ORDER BY b.band_id, a.artist_id
+
+SELECT b.band_id, b.name, b.year_started, b.year_ended, b.website
+FROM band b
+GROUP BY b.name
+ORDER BY b.band_id

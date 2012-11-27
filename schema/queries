@@ -1,0 +1,179 @@
+-- Chance Zibolski & Isaac Archer
+-- Databases CS275
+
+-- music section
+-- User inserts band into band table
+INSERT INTO band(name, year_started, year_ended, website)
+VALUES(
+    "The Killers",
+    "2001",
+    "",
+    "http://thekillersmusic.com"
+);
+
+-- user creates band members and adds them to a band.
+-- the band value will be taken from a drop down list of bands
+-- Ex "Brandon Flowers" added to band "The Killers"
+INSERT INTO artist(f_name, l_name)
+VALUES(
+    "Brandon",
+    "Flowers"
+);
+
+INSERT INTO band_member(band, member)
+    SELECT band_id, LAST_INSERT_ID()
+    FROM band
+    WHERE name="The Killers";
+
+
+--  create an album
+--  takes album info, and user will select the band from a drop down
+INSERT INTO album(name, release_date, record_label, genre)
+VALUES(
+    "Hot Fuss",
+    '2003-06-01',
+    'Lizard King records',
+    'Rock'
+);
+
+--  album just created gets inserted into band_album table based on band name
+--  from drop down menu
+--  ex: user selected; ex "The Killers" which has an ID of 1
+INSERT INTO band_album(band, album)
+    SELECT band_id, LAST_INSERT_ID()
+    FROM band
+    WHERE 1=band_id;-- the value 1 will be a variable
+
+
+--  album is created, lets add songs to it.
+--  user will have a drop down of albums, and then insert relevant song data for
+--  selected album, ex, "Hot Fuss" which has an ID of 1
+INSERT INTO song(name, length)
+VALUES(
+    "Mr Brightside",
+    222
+);
+
+INSERT INTO album_song(album, song, track_num)
+    SELECT album_id, LAST_INSERT_ID(), 1
+    FROM album
+    WHERE album_id=1;-- this 1 will be taken from a variable
+
+
+-- movies/tv section
+
+-- user wants to create an actor.
+INSERT INTO actor(f_name, l_name)
+VALUES(
+    "Heath",
+    "Ledger"
+);
+
+-- users wants to create a movie
+-- the user can then create a movie with specific values
+-- and they will have the ability to select existing actors to the movie
+-- Ex: User creates "batman", which is 1 hour 43 minutes long, is action and
+-- rated r, and then has a down of actors to select from for the initial movie
+-- creation
+INSERT INTO movie(name, length, genre, rating, description)
+VALUES(
+    "Batman",
+    103,
+    "Action",
+    "R",
+    "Theres bats, and a man, and its crazy good!"
+);
+
+-- select list will have all actors selected, and the code will then provide my
+--  query a list of actor_id's to insert into the query
+-- foreach loop that iterates through actor loop
+INSERT INTO movie_actor(movie, actor)
+VALUES(
+    LAST_INSERT_ID(),
+    1 -- this will be a value iterated through
+);
+
+
+-- query for inserting a new actor to a given movie from a select list
+-- example: create actor: "Christian" "Bale", and add him to batman which has an
+-- id of 2
+INSERT INTO actor(f_name, l_name)
+VALUES(
+    "Christian",
+    "Bale"
+);
+
+INSERT INTO movie_actor(movie, actor)
+VALUES(
+    1, -- variable from post data
+    LAST_INSERT_ID()
+);
+
+-- end insertions
+
+-- searches
+
+-- search based on band_id:
+-- band_id in this case is 1
+-- get band info based on band_id
+SELECT band_id, name, year_started, year_ended, website 
+FROM band
+WHERE band_id=1
+
+-- get band members based on band_id
+SELECT f_name, l_name
+FROM artist
+LEFT JOIN (SELECT member as id
+FROM band_member
+WHERE band=1) AS members
+ON members.id=artist.artist_id
+
+SELECT f_name, l_name
+FROM artist a
+INNER JOIN band_member bm ON bm.member = a.artist_id
+WHERE bm.band=1
+
+-- get album information based on band_id
+SELECT name, release_date, record_label, genre
+FROM album
+LEFT JOIN (SELECT album as id
+FROM band_album
+WHERE band=1) AS albums
+ON albums.id=album.album_id
+
+-- revised
+SELECT name, release_date, record_label, genre
+FROM album a
+INNER JOIN band_album ba ON ba.album=a.id
+WHERE ba.band=1
+
+
+-- get song info for a given album
+SELECT name, length
+FROM song s
+LEFT JOIN
+(SELECT song as id
+FROM album_song
+WHERE album=1) AS songs
+ON songs.id=s.song_id
+
+
+-- get movie infrom from a given movie_id
+SELECT name, length, genre, rating
+FROM movie
+WHERE movie_id=2
+
+-- get actors for a given movie_id
+SELECT f_name, l_name
+FROM actor a
+LEFT JOIN (SELECT actor as id
+FROM movie_actor as m
+WHERE m.movie=2) AS actors
+ON actors.id=a.actor_id
+
+SELECT a.album_id, a.name, a.record_label, a.genre,
+a.release_date, b.name
+FROM band_album ba
+LEFT JOIN album a ON a.album_id=ba.album
+LEFT JOIN band b on b.band_id=ba.band
+WHERE ba.album = %s

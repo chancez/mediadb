@@ -1,0 +1,87 @@
+-- Chance Zibolski && Isaac Archer
+
+CREATE TABLE album
+(
+    album_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    release_date date,
+    record_label VARCHAR(255),
+    genre VARCHAR(255)
+);
+
+CREATE TABLE song
+(
+    song_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    length INT
+);
+
+CREATE TABLE album_song
+(
+    album INT,
+    song INT,
+    track_num INT,
+    FOREIGN KEY (album) REFERENCES album(album_id),
+    FOREIGN KEY (song) REFERENCES song(song_id),
+    PRIMARY KEY(album, song, track_num)
+);
+
+CREATE TABLE band
+(
+    band_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    year_started INT,
+    year_ended INT,
+    website VARCHAR(255)
+);
+
+CREATE TABLE artist
+(
+    artist_id INT PRIMARY KEY AUTO_INCREMENT,
+    f_name VARCHAR(255),
+    l_name VARCHAR(255)
+);
+
+CREATE TABLE band_member
+(
+    member INT,
+    band INT,
+    FOREIGN KEY (band) REFERENCES band(band_id),
+    FOREIGN KEY (member) REFERENCES artist(artist_id),
+    PRIMARY KEY (band, member)
+);
+
+CREATE TABLE band_album
+(
+    band INT,
+    album INT,
+    FOREIGN KEY (band) REFERENCES band(band_id),
+    FOREIGN KEY (album) REFERENCES album(album_id),
+    PRIMARY KEY (band, album)
+);
+
+CREATE TABLE actor
+(
+    actor_id INT PRIMARY KEY AUTO_INCREMENT,
+    f_name VARCHAR(255),
+    l_name VARCHAR(255)
+);
+
+CREATE TABLE movie
+(
+    movie_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    length INT,
+    genre VARCHAR(255),
+    rating VARCHAR(255),
+    description BLOB
+);
+
+CREATE TABLE movie_actor
+(
+    movie INT,
+    actor INT,
+    FOREIGN KEY (movie) REFERENCES movie(movie_id),
+    FOREIGN KEY (actor) REFERENCES actor(actor_id),
+    PRIMARY KEY (movie, actor)
+);
