@@ -24,18 +24,6 @@ def before_request():
 def teardown_request(exception):
     g.db.close()
 
-def get_movies():
-    movies = []
-    return movies
-
-def get_songs():
-    songs = []
-    return songs
-
-def get_actors():
-    actors = []
-    return actors
-
 def get_movie_genres():
     genres = ["action", "adventure", "comedy", "crime", "horror"]
     return genres
@@ -224,19 +212,6 @@ def get_album(album_id):
 @app.route('/')
 def home():
     return render_template("home.html")
-
-@app.route('/videos/')
-def videos():
-    movies = get_movies()
-    genres = get_movie_genres()
-    return render_template("videos.html", movies=movies, genres=genres)
-
-@app.route('/movie/<int:movie_id>')
-def get_movie(movie_id):
-    movies = get_movies()
-    movie = ''
-
-    return render_template("movie.html", movie=movie)
 
 @app.route('/music/')
 def music():

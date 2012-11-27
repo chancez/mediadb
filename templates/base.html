@@ -23,7 +23,6 @@
           <ul class="nav">
             {% block nav %}
               <li {% if active_page == "home" %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a></li>
-              <!-- <li {% if active_page == "videos" %} class="active" {% endif %}><a href="{{ url_for('videos') }}">Videos</a></li> -->
               <li {% if active_page == "music" %} class="active" {% endif %}><a href="{{ url_for('music') }}">Music</a></li>
             {% endblock %}
           </ul>
