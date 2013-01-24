@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>CS275 Media DB</title>
+
+    <!-- Le styles -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/bootstrap-responsive.min.css') }}" rel="stylesheet" type="text/css">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          </a>
+          <a class="brand" href="/">CS275 Media Database</a>
+          <ul class="nav">
+            {% block nav %}
+              <li {% if active_page == "home" %} class="active" {% endif %}><a href="{{ url_for('home') }}">Home</a></li>
+              <li {% if active_page == "videos" %} class="active" {% endif %}><a href="{{ url_for('videos') }}">Videos</a></li>
+              <li {% if active_page == "music" %} class="active" {% endif %}><a href="{{ url_for('music') }}">Music</a></li>
+            {% endblock %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div id="content">
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
+
+
+  </body>
+</html>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% set active_page = "music" %}
+
+{% block content %}
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Artist</th>
+      <th>Category</th>
+      <th>Length</th>
+    </tr>
+    <! -- Music -->
+    {% for item in music %}
+      <tr>
+        <td>{{ item.title }}</td>
+        <td>{{ item.artist }}</td>
+        <td>{{ item.category }}</td>
+        <td>{{ item.Length }}</td>
+      </tr>
+    {% endfor %}
+
+  </table>
+{% endblock %}

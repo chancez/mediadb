@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% set active_page = "videos" %}
+
+{% block content %}
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Genre</th>
+      <th>Category</th>
+    </tr>
+    <! -- Movies -->
+    {% for movie in movies|sort(attribute='genre') %}
+      <tr>
+        <td>{{ movie.title }}</td>
+        <td>{{ movie.genre }}</td>
+        <td>{{ movie.category }}</td>
+      </tr>
+    {% endfor %}
+
+  </table>
+{% endblock %}
