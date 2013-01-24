@@ -11,6 +11,7 @@ SECRET_KEY = 'development key'
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+# Reusable db connection
 def connect_db():
     return mdb.connect(host="localhost", port=3306, user="testuser",
                     passwd="test123", db="media_db",
@@ -23,10 +24,6 @@ def before_request():
 @app.teardown_request
 def teardown_request(exception):
     g.db.close()
-
-def get_movie_genres():
-    genres = ["action", "adventure", "comedy", "crime", "horror"]
-    return genres
 
 def get_band(band_id):
     query = """SELECT band_id as id, name, year_started AS begin,
@@ -258,11 +255,6 @@ def create_album():
             else:
                 err_message = 'Error, %s cannot be empty.' % key
             flash(err_message, "error")
-
-    #if title in get_band_albums():
-    #    errors = True
-    #    err_message = 'Error, album "%s" already exists for band "%s"'
-    #    flash(err_message % (title, band), 'error')
 
     if not errors:
         # Still needs error checking for if album exists. However albums are on
